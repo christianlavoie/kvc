@@ -1,20 +1,25 @@
-REBAR ?= $(shell which rebar 2>/dev/null || which ./rebar)
+REBAR ?= $(shell which rebar3 2>/dev/null || which ./rebar)
 .PHONY: all edoc test clean proper
 
 all:
-	@$(REBAR) get-deps compile
+	cp -f ./rebar.main.config ./rebar.config
+	$(REBAR) dialyzer get-deps compile
 
 edoc:
-	@$(REBAR) doc
+	cp -f ./rebar.main.config ./rebar.config
+	$(REBAR) doc
 
 test:
-	@$(REBAR) xref
-	@$(REBAR) skip_deps=true eunit
+	cp -f ./rebar.main.config ./rebar.config
+	$(REBAR) xref
+	$(REBAR) eunit
 
 proper:
-	@$(REBAR) -C rebar.proper.config get-deps compile
-	@$(REBAR) -C rebar.proper.config xref
-	@$(REBAR) -C rebar.proper.config skip_deps=true eunit
+	cp -f ./rebar.proper.config ./rebar.config
+	$(REBAR) compile
+	$(REBAR) xref
+	$(REBAR) eunit
 
 clean:
-	@$(REBAR) clean
+	cp -f ./rebar.main.config ./rebar.config
+	$(REBAR) clean
